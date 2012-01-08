@@ -44,6 +44,7 @@ class ApiBasePackagePackage extends Package {
 		$pkg3['class'] = 'BasePackage';
 		$pkg3['method'] = 'update';
 		$pkg3['via'][] = 'post';
+		$pkg3['via'][] = 'get';
 		
 		$pkg4 = array(); //uninstall
 		$pkg4['pkgHandle'] = $this->pkgHandle;
@@ -98,15 +99,15 @@ class ApiBasePackagePackage extends Package {
 
 		Loader::model('api_register', 'api');
 		ApiRegister::add($pkg1);
-		ApiRegister::add($pkg2);
 		ApiRegister::add($pkg3);
 		ApiRegister::add($pkg4);
+		ApiRegister::add($pkg2);
 		
 		ApiRegister::add($config1);
-		ApiRegister::add($config2);
 		ApiRegister::add($config3);
 		ApiRegister::add($config4);
 		ApiRegister::add($config5);
+		ApiRegister::add($config2);
 
 		parent::install();
 	}
