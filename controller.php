@@ -97,8 +97,16 @@ class ApiBasePackagePackage extends Package {
 /* Config End */
 
 		Loader::model('api_register', 'api');
-		ApiRegister::add($api);
-		ApiRegister::add($api2);
+		ApiRegister::add($pkg1);
+		ApiRegister::add($pkg2);
+		ApiRegister::add($pkg3);
+		ApiRegister::add($pkg4);
+		
+		ApiRegister::add($config1);
+		ApiRegister::add($config2);
+		ApiRegister::add($config3);
+		ApiRegister::add($config4);
+		ApiRegister::add($config5);
 
 		parent::install();
 	}
