@@ -25,7 +25,7 @@ class ApiBasePackagePackage extends Package {
 		$pkg1['pkgHandle'] = $this->pkgHandle;
 		$pkg1['route'] = 'package';
 		$pkg1['routeName'] = t('List Packages');
-		$pkg1['class'] = 'package';
+		$pkg1['class'] = 'BasePackage';
 		$pkg1['method'] = 'index';
 		$pkg1['via'][] = 'get';
 		
@@ -33,7 +33,7 @@ class ApiBasePackagePackage extends Package {
 		$pkg2['pkgHandle'] = $this->pkgHandle;
 		$pkg2['route'] = 'package/:handle';
 		$pkg2['routeName'] = t('Package Information');
-		$pkg2['class'] = 'package';
+		$pkg2['class'] = 'BasePackage';
 		$pkg2['method'] = 'info';
 		$pkg2['via'][] = 'get';
 		
@@ -41,7 +41,7 @@ class ApiBasePackagePackage extends Package {
 		$pkg3['pkgHandle'] = $this->pkgHandle;
 		$pkg3['route'] = 'package/update';
 		$pkg3['routeName'] = t('Package Update');
-		$pkg3['class'] = 'package';
+		$pkg3['class'] = 'BasePackage';
 		$pkg3['method'] = 'update';
 		$pkg3['via'][] = 'post';
 		
@@ -49,7 +49,7 @@ class ApiBasePackagePackage extends Package {
 		$pkg4['pkgHandle'] = $this->pkgHandle;
 		$pkg4['route'] = 'package/destroy';
 		$pkg4['routeName'] = t('Package Uninstall');
-		$pkg4['class'] = 'package';
+		$pkg4['class'] = 'BasePackage';
 		$pkg4['method'] = 'destroy';
 		$pkg4['via'][] = 'post';
 /* Package End */
