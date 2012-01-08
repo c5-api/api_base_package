@@ -14,35 +14,52 @@ class ApiBasePackage extends ApiController {
 	 * @method GET
 	 */
 	public function index() {
-		$db = Loader::db();
-		$r = $db->Execute('SELECT pkgHandle FROM Packages');
-		$objs = array();
-		while($row = $r->FetchRow()) {
-			$objs[] = $row;
-		}
-		return $objs;
+		return Package::getInstalledHandles();
 	}
 
 
 	/**
 	 * Get Package Info
-	 * @route /packages/:handle
+	 * @route /package/:handle
 	 * @method GET
 	 */	
 	public function info($handle) {
 		$pkg = self::validatePkg($handle);
-		unset($pkg->error);
-		return $pkg;
+		$db = Loader::db();
+		$row = $db->getRow('SELECT pkgVersion FROM Packages WHERE pkgHandle = ?', $handle);
+		$arr = array();
+		$arr['ID'] = $pkg->getPackageID();
+		$arr['handle'] = $pkg->getPackageHandle();
+		$arr['name'] = $pkg->getPackageName();
+		$arr['description'] = $pkg->getPackageDescription();
+		$arr['dateInstalled'] = $pkg->getPackageDateInstalled();
+		$arr['version'] = $row['pkgVersion'];
+		$arr['versionRequired'] = $pkg->getApplicationVersionRequired();
+		$arr['changelog'] = $pkg->getChangelogContents();
+		//$arr['items'] = $pkg->getPackageItems(); //too much info!
+		return $arr;
 		
 	}
 
 	/**
 	 * Update Package
-	 * @route /packages/update
+	 * @route /package/update
 	 * @method POST
 	 * @errors ERROR_BAD_REQUEST
 	 */		
 	public function update() {
+		if(API_REQUEST_METHOD == 'GET') {
+			$local = Package::getLocalUpgradeablePackages();
+			$remote = Package::getRemotelyUpgradeablePackages();
+			$arr = array();
+			foreach($local as $pkg) {
+				$arr['local'] = array($pkg->getPackageHandle() => array('current' => $pkg->getPackageCurrentlyInstalledVersion(), 'available' => $pkg->getPackageVersion()));
+			}
+			foreach($remote as $pkg) {
+				$arr['remote'] = array($pkg->getPackageHandle() => array('current' => $pkg->getPackageCurrentlyInstalledVersion(), 'available' => $pkg->getPackageVersion()));
+			}
+			return $arr;
+		}
 		$handle = $_POST['handle'];
 		if(!$handle) {
 			$resp = ApiResponse::getInstance();
@@ -52,13 +69,13 @@ class ApiBasePackage extends ApiController {
 			$resp->send();
 		}
 		$pkg = self::validatePkg($handle);
-		//@todo
+		$pkg->upgrade();
 
 	}
 
 	/**
 	 * Uninstall Package
-	 * @route /packages/destroy
+	 * @route /package/destroy
 	 * @method POST
 	 * @errors ERROR_BAD_REQUEST
 	 */		
