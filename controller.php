@@ -59,7 +59,7 @@ class ApiBasePackagePackage extends Package {
 		$config1['pkgHandle'] = $this->pkgHandle;
 		$config1['route'] = 'package/:handle/config/';
 		$config1['routeName'] = t('Package Config Entries');
-		$config1['class'] = 'package_config';
+		$config1['class'] = 'PackageConfig';
 		$config1['method'] = 'index';
 		$config1['via'][] = 'get';
 
@@ -67,7 +67,7 @@ class ApiBasePackagePackage extends Package {
 		$config2['pkgHandle'] = $this->pkgHandle;
 		$config2['route'] = 'package/:handle/config/:key';
 		$config2['routeName'] = t('Package Config Entry Info');
-		$config2['class'] = 'package_config';
+		$config2['class'] = 'PackageConfig';
 		$config2['method'] = 'entry';
 		$config2['via'][] = 'get';
 		
@@ -75,7 +75,7 @@ class ApiBasePackagePackage extends Package {
 		$config3['pkgHandle'] = $this->pkgHandle;
 		$config3['route'] = 'package/:handle/config/create';
 		$config3['routeName'] = t('Package Create Config Entries');
-		$config3['class'] = 'package_config';
+		$config3['class'] = 'PackageConfig';
 		$config3['method'] = 'create';
 		$config3['via'][] = 'post';
 
@@ -83,7 +83,7 @@ class ApiBasePackagePackage extends Package {
 		$config4['pkgHandle'] = $this->pkgHandle;
 		$config4['route'] = 'package/:handle/config/update';
 		$config4['routeName'] = t('Package Update Config Entries');
-		$config4['class'] = 'package_config';
+		$config4['class'] = 'PackageConfig';
 		$config4['method'] = 'update';
 		$config4['via'][] = 'post';
 
@@ -91,7 +91,7 @@ class ApiBasePackagePackage extends Package {
 		$config5['pkgHandle'] = $this->pkgHandle;
 		$config5['route'] = 'package/:handle/config/destroy';
 		$config5['routeName'] = t('Package Delete Config Entries');
-		$config5['class'] = 'package_config';
+		$config5['class'] = 'PackageConfig';
 		$config5['method'] = 'destroy';
 		$config5['via'][] = 'post';
 /* Config End */

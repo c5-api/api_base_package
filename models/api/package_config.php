@@ -1,5 +1,11 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
+/**
+ * Package Config Class
+ * 
+ * Retrieve and set information about package config entries
+ * @author Michael Krasnow <mnkras@gmail.com>
+ */
 class ApiPackageConfig extends ApiController {
 	
 	/**
@@ -7,9 +13,15 @@ class ApiPackageConfig extends ApiController {
 	 * @route /packages/:handle/config
 	 * @method GET
 	 */
-	public function index() {
+	public function index($handle) {
 		$pkg = self::validatePkg($handle);
-		//@todo
+		$db = Loader::db();
+		$r = $db->Execute('SELECT * FROM Config where pkgID = ?', array($pkg->getPackageID()));
+		$objs = array();
+		while($row = $r->FetchRow()) {
+			$objs[] = $row['cfKey'];
+		}
+		return $objs;
 	}
 
 
@@ -23,9 +35,14 @@ class ApiPackageConfig extends ApiController {
 		$pkg = self::validatePkg($handle);
 		$conf = $pkg->config($key, true);
 		if(is_object($conf)) {
+			unset($conf->error);
 			return $conf;
 		}
-		//@todo error
+		$resp = ApiResponse::getInstance();
+		$resp->setError(true);
+		$resp->setCode(404);
+		$resp->setMessage('ERROR_NOT_FOUND');
+		$resp->send();	
 		
 	}
 
@@ -42,11 +59,21 @@ class ApiPackageConfig extends ApiController {
 		if($key && $value) { //@todo validate they are strings
 			$val = $pkg->config($key, true);
 			if(!is_object($val)) {
+				$resp = ApiResponse::getInstance();
+				$resp->setCode(201);
 				return $pkg->saveConfig($key, $value);
 			}
-			//@todo error
+			$resp = ApiResponse::getInstance();
+			$resp->setError(true);
+			$resp->setCode(409);
+			$resp->setMessage('ERROR_ALREADY_EXISTS');
+			$resp->send();	
 		}
-		//@todo error
+		$resp = ApiResponse::getInstance();
+		$resp->setError(true);
+		$resp->setCode(400);
+		$resp->setMessage('ERROR_BAD_REQUEST');
+		$resp->send();	
 	}
 
 	/**
@@ -61,12 +88,20 @@ class ApiPackageConfig extends ApiController {
 		$value = $_POST['value'];
 		if($key && $value) { //@todo validate they are strings
 			$val = $pkg->config($key, true);
-			if(!is_object($val)) {
+			if(is_object($val)) {
 				return $pkg->saveConfig($key, $value);
 			}
-			//@todo error
+			$resp = ApiResponse::getInstance();
+			$resp->setError(true);
+			$resp->setCode(404);
+			$resp->setMessage('ERROR_NOT_FOUND');
+			$resp->send();	
 		}
-		//@todo error
+		$resp = ApiResponse::getInstance();
+		$resp->setError(true);
+		$resp->setCode(400);
+		$resp->setMessage('ERROR_BAD_REQUEST');
+		$resp->send();	
 	}
 
 	/**
@@ -83,10 +118,17 @@ class ApiPackageConfig extends ApiController {
 			if(is_object($val)) {
 				return $pkg->clearConfig($key);
 			}
-			//@todo error
+			$resp = ApiResponse::getInstance();
+			$resp->setError(true);
+			$resp->setCode(409);
+			$resp->setMessage('ERROR_NOT_FOUND');
+			$resp->send();	
 		}
-		//@todo error
-	}
+		$resp = ApiResponse::getInstance();
+		$resp->setError(true);
+		$resp->setCode(400);
+		$resp->setMessage('ERROR_BAD_REQUEST');
+		$resp->send();		}
 	
 	private static function validatePkg($handle) {
 		$pkg = Package::getByHandle($handle);
@@ -95,8 +137,9 @@ class ApiPackageConfig extends ApiController {
 		}
 		$resp = ApiResponse::getInstance();
 		$resp->setError(true);
-		//@todo finish
-	
+		$resp->setCode(404);
+		$resp->setMessage('ERROR_PACKAGE_NOT_FOUND');
+		$resp->send();	
 	}
 
 }
