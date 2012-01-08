@@ -19,11 +19,13 @@ class ApiBasePackagePackage extends Package {
 		if(!is_object($installed)) {
 			throw new Exception(t('Please install the "API" package before installing %s', $this->getPackageName()));
 		}
+		
+		$baseRoute = 'package';
 
 /* Package Start */
 		$pkg1 = array(); //List all packages
 		$pkg1['pkgHandle'] = $this->pkgHandle;
-		$pkg1['route'] = 'package';
+		$pkg1['route'] = $baseRoute;
 		$pkg1['routeName'] = t('List Packages');
 		$pkg1['class'] = 'BasePackage';
 		$pkg1['method'] = 'index';
@@ -31,7 +33,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$pkg2 = array(); //get info
 		$pkg2['pkgHandle'] = $this->pkgHandle;
-		$pkg2['route'] = 'package/:handle';
+		$pkg2['route'] = $baseRoute.'/:handle';
 		$pkg2['routeName'] = t('Package Information');
 		$pkg2['class'] = 'BasePackage';
 		$pkg2['method'] = 'info';
@@ -39,7 +41,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$pkg3 = array(); //update
 		$pkg3['pkgHandle'] = $this->pkgHandle;
-		$pkg3['route'] = 'package/update';
+		$pkg3['route'] = $baseRoute.'/update';
 		$pkg3['routeName'] = t('Package Update');
 		$pkg3['class'] = 'BasePackage';
 		$pkg3['method'] = 'update';
@@ -48,7 +50,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$pkg4 = array(); //uninstall
 		$pkg4['pkgHandle'] = $this->pkgHandle;
-		$pkg4['route'] = 'package/destroy';
+		$pkg4['route'] = $baseRoute.'/destroy';
 		$pkg4['routeName'] = t('Package Uninstall');
 		$pkg4['class'] = 'BasePackage';
 		$pkg4['method'] = 'destroy';
@@ -58,7 +60,7 @@ class ApiBasePackagePackage extends Package {
 /* Config Start */
 		$config1 = array(); //get config keys for packages
 		$config1['pkgHandle'] = $this->pkgHandle;
-		$config1['route'] = 'package/:handle/config/';
+		$config1['route'] = $baseRoute.'/:handle/config/';
 		$config1['routeName'] = t('Package Config Entries');
 		$config1['class'] = 'PackageConfig';
 		$config1['method'] = 'index';
@@ -66,7 +68,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config2 = array(); //get config key info for packages
 		$config2['pkgHandle'] = $this->pkgHandle;
-		$config2['route'] = 'package/:handle/config/:key';
+		$config2['route'] = $baseRoute.'/:handle/config/:key';
 		$config2['routeName'] = t('Package Config Entry Info');
 		$config2['class'] = 'PackageConfig';
 		$config2['method'] = 'entry';
@@ -74,7 +76,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$config3 = array(); //create config keys for packages
 		$config3['pkgHandle'] = $this->pkgHandle;
-		$config3['route'] = 'package/:handle/config/create';
+		$config3['route'] = $baseRoute.'/:handle/config/create';
 		$config3['routeName'] = t('Package Create Config Entries');
 		$config3['class'] = 'PackageConfig';
 		$config3['method'] = 'create';
@@ -82,7 +84,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config4 = array(); //update config keys for packages
 		$config4['pkgHandle'] = $this->pkgHandle;
-		$config4['route'] = 'package/:handle/config/update';
+		$config4['route'] = $baseRoute.'/:handle/config/update';
 		$config4['routeName'] = t('Package Update Config Entries');
 		$config4['class'] = 'PackageConfig';
 		$config4['method'] = 'update';
@@ -90,7 +92,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config5 = array(); //delete config keys for packages
 		$config5['pkgHandle'] = $this->pkgHandle;
-		$config5['route'] = 'package/:handle/config/destroy';
+		$config5['route'] = $baseRoute.'/:handle/config/destroy';
 		$config5['routeName'] = t('Package Delete Config Entries');
 		$config5['class'] = 'PackageConfig';
 		$config5['method'] = 'destroy';
