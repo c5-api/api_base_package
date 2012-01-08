@@ -120,7 +120,7 @@ class ApiPackageConfig extends ApiController {
 			}
 			$resp = ApiResponse::getInstance();
 			$resp->setError(true);
-			$resp->setCode(409);
+			$resp->setCode(404);
 			$resp->setMessage('ERROR_NOT_FOUND');
 			$resp->send();	
 		}

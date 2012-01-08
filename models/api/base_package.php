@@ -40,7 +40,7 @@ class ApiBasePackage extends ApiController {
 	 * Update Package
 	 * @route /packages/update
 	 * @method POST
-	 * @errors ERROR_NOT_FOUND | ERROR_BAD_REQUEST
+	 * @errors ERROR_BAD_REQUEST
 	 */		
 	public function update() {
 		$handle = $_POST['handle'];
@@ -52,6 +52,7 @@ class ApiBasePackage extends ApiController {
 			$resp->send();
 		}
 		$pkg = self::validatePkg($handle);
+		//@todo
 
 	}
 
