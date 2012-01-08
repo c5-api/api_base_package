@@ -8,6 +8,7 @@ class ApiPackageConfig extends ApiController {
 	 * @method GET
 	 */
 	public function index() {
+		$pkg = self::validatePkg($handle);
 		//@todo
 	}
 
@@ -16,6 +17,7 @@ class ApiPackageConfig extends ApiController {
 	 * Get Package Config Entry
 	 * @route /packages/:handle/config/:key
 	 * @method GET
+	 * @errors ERROR_NOT_FOUND
 	 */	
 	public function entry($handle, $key) {
 		$pkg = self::validatePkg($handle);
@@ -31,13 +33,18 @@ class ApiPackageConfig extends ApiController {
 	 * Create Package Config Entry
 	 * @route /packages/:handle/config/create
 	 * @method POST
+	 * @errors ERROR_ALREADY_EXISTS | ERROR_BAD_REQUEST
 	 */		
 	public function create($handle) {
 		$pkg = self::validatePkg($handle);
 		$key = $_POST['key'];
 		$value = $_POST['value'];
 		if($key && $value) { //@todo validate they are strings
-			return $pkg->saveConfig($key, $value);
+			$val = $pkg->config($key, true);
+			if(!is_object($val)) {
+				return $pkg->saveConfig($key, $value);
+			}
+			//@todo error
 		}
 		//@todo error
 	}
@@ -46,6 +53,7 @@ class ApiPackageConfig extends ApiController {
 	 * Update Package Config Entry
 	 * @route /packages/:handle/config/update
 	 * @method POST
+	 * @errors ERROR_NOT_FOUND | ERROR_BAD_REQUEST
 	 */		
 	public function update($handle) {
 		$pkg = self::validatePkg($handle);
@@ -65,6 +73,7 @@ class ApiPackageConfig extends ApiController {
 	 * Update Package Config Entry
 	 * @route /packages/:handle/config/destroy
 	 * @method POST
+	 * @errors ERROR_NOT_FOUND | ERROR_BAD_REQUEST
 	 */		
 	public function destroy($handle) {
 		$pkg = self::validatePkg($handle);
