@@ -20,6 +20,12 @@ class ApiBasePackagePackage extends Package {
 			throw new Exception(t('Please install the "API" package before installing %s', $this->getPackageName()));
 		}
 		
+		$this->refreshRoutes();
+
+		parent::install();
+	}
+	
+	public function refreshRoutes() {
 		$baseRoute = 'package';
 
 /* Package Start */
@@ -41,7 +47,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$pkg3 = array(); //update
 		$pkg3['pkgHandle'] = $this->pkgHandle;
-		$pkg3['route'] = $baseRoute.'/update';
+		$pkg3['route'] = $baseRoute.'/-/update';
 		$pkg3['routeName'] = t('Package Update');
 		$pkg3['class'] = 'BasePackage';
 		$pkg3['method'] = 'update';
@@ -50,7 +56,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$pkg4 = array(); //uninstall
 		$pkg4['pkgHandle'] = $this->pkgHandle;
-		$pkg4['route'] = $baseRoute.'/destroy';
+		$pkg4['route'] = $baseRoute.'/-/destroy';
 		$pkg4['routeName'] = t('Package Uninstall');
 		$pkg4['class'] = 'BasePackage';
 		$pkg4['method'] = 'destroy';
@@ -76,7 +82,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$config3 = array(); //create config keys for packages
 		$config3['pkgHandle'] = $this->pkgHandle;
-		$config3['route'] = $baseRoute.'/:handle/config/create';
+		$config3['route'] = $baseRoute.'/:handle/config/-/create';
 		$config3['routeName'] = t('Package Create Config Entries');
 		$config3['class'] = 'PackageConfig';
 		$config3['method'] = 'create';
@@ -84,7 +90,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config4 = array(); //update config keys for packages
 		$config4['pkgHandle'] = $this->pkgHandle;
-		$config4['route'] = $baseRoute.'/:handle/config/update';
+		$config4['route'] = $baseRoute.'/:handle/config/-/update';
 		$config4['routeName'] = t('Package Update Config Entries');
 		$config4['class'] = 'PackageConfig';
 		$config4['method'] = 'update';
@@ -92,7 +98,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config5 = array(); //delete config keys for packages
 		$config5['pkgHandle'] = $this->pkgHandle;
-		$config5['route'] = $baseRoute.'/:handle/config/destroy';
+		$config5['route'] = $baseRoute.'/:handle/config/-/destroy';
 		$config5['routeName'] = t('Package Delete Config Entries');
 		$config5['class'] = 'PackageConfig';
 		$config5['method'] = 'destroy';
@@ -110,8 +116,7 @@ class ApiBasePackagePackage extends Package {
 		ApiRegister::add($config4);
 		ApiRegister::add($config5);
 		ApiRegister::add($config2);
-
-		parent::install();
+	
 	}
 	
 	public function uninstall() {
