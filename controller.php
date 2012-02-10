@@ -4,7 +4,7 @@ class ApiBasePackagePackage extends Package {
 
 	protected $pkgHandle = 'api_base_package';
 	protected $appVersionRequired = '5.5.0';
-	protected $pkgVersion = '1.0';
+	protected $pkgVersion = '1.1';
 
 	public function getPackageName() {
 		return t("Api:Base:Package");
@@ -39,34 +39,49 @@ class ApiBasePackagePackage extends Package {
 		
 		$pkg2 = array(); //get info
 		$pkg2['pkgHandle'] = $this->pkgHandle;
-		$pkg2['route'] = $baseRoute.'/:handle';
+		$pkg2['route'] = $baseRoute.'/-/:handle';
 		$pkg2['routeName'] = t('Package Information');
 		$pkg2['class'] = 'BasePackage';
 		$pkg2['method'] = 'info';
 		$pkg2['via'][] = 'get';
-		
-		$pkg3 = array(); //update
+
+		$pkg3 = array(); //updates
 		$pkg3['pkgHandle'] = $this->pkgHandle;
-		$pkg3['route'] = $baseRoute.'/-/update';
-		$pkg3['routeName'] = t('Package Update');
+		$pkg3['route'] = $baseRoute.'/updates';
+		$pkg3['routeName'] = t('Package Updates Available');
 		$pkg3['class'] = 'BasePackage';
-		$pkg3['method'] = 'update';
-		$pkg3['via'][] = 'post';
+		$pkg3['method'] = 'updates';
 		$pkg3['via'][] = 'get';
 		
-		$pkg4 = array(); //uninstall
+		$pkg4 = array(); //update
 		$pkg4['pkgHandle'] = $this->pkgHandle;
-		$pkg4['route'] = $baseRoute.'/-/destroy';
-		$pkg4['routeName'] = t('Package Uninstall');
+		$pkg4['route'] = $baseRoute.'/update';
+		$pkg4['routeName'] = t('Package Update');
 		$pkg4['class'] = 'BasePackage';
-		$pkg4['method'] = 'destroy';
+		$pkg4['method'] = 'update';
 		$pkg4['via'][] = 'post';
+		
+		$pkg5 = array(); //uninstall
+		$pkg5['pkgHandle'] = $this->pkgHandle;
+		$pkg5['route'] = $baseRoute.'/destroy';
+		$pkg5['routeName'] = t('Package Uninstall');
+		$pkg5['class'] = 'BasePackage';
+		$pkg5['method'] = 'destroy';
+		$pkg5['via'][] = 'post';
+		
+		$pkg6 = array(); //uninstall
+		$pkg6['pkgHandle'] = $this->pkgHandle;
+		$pkg6['route'] = $baseRoute.'/install';
+		$pkg6['routeName'] = t('Package Install');
+		$pkg6['class'] = 'BasePackage';
+		$pkg6['method'] = 'install';
+		$pkg6['via'][] = 'post';
 /* Package End */
 
 /* Config Start */
 		$config1 = array(); //get config keys for packages
 		$config1['pkgHandle'] = $this->pkgHandle;
-		$config1['route'] = $baseRoute.'/:handle/config/';
+		$config1['route'] = $baseRoute.'/-/:handle/config/';
 		$config1['routeName'] = t('Package Config Entries');
 		$config1['class'] = 'PackageConfig';
 		$config1['method'] = 'index';
@@ -74,7 +89,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config2 = array(); //get config key info for packages
 		$config2['pkgHandle'] = $this->pkgHandle;
-		$config2['route'] = $baseRoute.'/:handle/config/:key';
+		$config2['route'] = $baseRoute.'/-/:handle/config/:key';
 		$config2['routeName'] = t('Package Config Entry Info');
 		$config2['class'] = 'PackageConfig';
 		$config2['method'] = 'entry';
@@ -82,7 +97,7 @@ class ApiBasePackagePackage extends Package {
 		
 		$config3 = array(); //create config keys for packages
 		$config3['pkgHandle'] = $this->pkgHandle;
-		$config3['route'] = $baseRoute.'/:handle/config/-/create';
+		$config3['route'] = $baseRoute.'/-/:handle/config/-/create';
 		$config3['routeName'] = t('Package Create Config Entries');
 		$config3['class'] = 'PackageConfig';
 		$config3['method'] = 'create';
@@ -90,7 +105,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config4 = array(); //update config keys for packages
 		$config4['pkgHandle'] = $this->pkgHandle;
-		$config4['route'] = $baseRoute.'/:handle/config/-/update';
+		$config4['route'] = $baseRoute.'/-/:handle/config/-/update';
 		$config4['routeName'] = t('Package Update Config Entries');
 		$config4['class'] = 'PackageConfig';
 		$config4['method'] = 'update';
@@ -98,7 +113,7 @@ class ApiBasePackagePackage extends Package {
 
 		$config5 = array(); //delete config keys for packages
 		$config5['pkgHandle'] = $this->pkgHandle;
-		$config5['route'] = $baseRoute.'/:handle/config/-/destroy';
+		$config5['route'] = $baseRoute.'/-/:handle/config/-/destroy';
 		$config5['routeName'] = t('Package Delete Config Entries');
 		$config5['class'] = 'PackageConfig';
 		$config5['method'] = 'destroy';
@@ -110,6 +125,8 @@ class ApiBasePackagePackage extends Package {
 		ApiRegister::add($pkg3);
 		ApiRegister::add($pkg4);
 		ApiRegister::add($pkg2);
+		ApiRegister::add($pkg5);
+		ApiRegister::add($pkg6);
 		
 		ApiRegister::add($config1);
 		ApiRegister::add($config3);

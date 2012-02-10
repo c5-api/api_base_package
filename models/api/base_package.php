@@ -14,13 +14,20 @@ class ApiBasePackage extends ApiController {
 	 * @method GET
 	 */
 	public function index() {
-		return Package::getInstalledHandles();
+		$final = array();
+		foreach(Package::getInstalledHandles() as $handle) {
+			$pkg = Package::getByHandle($handle);
+			if(is_object($pkg)) {
+				$final[$pkg->getPackageID()] = $handle;
+			}
+		}
+		return $final;
 	}
 
 
 	/**
 	 * Get Package Info
-	 * @route /package/:handle
+	 * @route /package/-/:handle
 	 * @method GET
 	 */	
 	public function info($handle) {
@@ -42,24 +49,35 @@ class ApiBasePackage extends ApiController {
 	}
 
 	/**
+	 * List Package Updates
+	 * @route /package/updates
+	 * @method GET
+	 */		
+	public function updates() {
+		Loader::library('marketplace');
+		$mi = Marketplace::getInstance();
+		if ($mi->isConnected()) {
+			Marketplace::checkPackageUpdates();
+		}
+		$local = Package::getLocalUpgradeablePackages();
+		$remote = Package::getRemotelyUpgradeablePackages();
+		$arr = array();
+		foreach($local as $pkg) {
+			$arr['local'] = array($pkg->getPackageHandle() => array('current' => $pkg->getPackageCurrentlyInstalledVersion(), 'available' => $pkg->getPackageVersion()));
+		}
+		foreach($remote as $pkg) {
+			$arr['remote'] = array($pkg->getPackageHandle() => array('current' => $pkg->getPackageVersion(), 'available' => $pkg->getPackageVersionUpdateAvailable()));
+		}
+		return $arr;
+	}
+
+	/**
 	 * Update Package
 	 * @route /package/update
 	 * @method POST
 	 * @errors ERROR_BAD_REQUEST
 	 */		
 	public function update() {
-		if(API_REQUEST_METHOD == 'GET') {
-			$local = Package::getLocalUpgradeablePackages();
-			$remote = Package::getRemotelyUpgradeablePackages();
-			$arr = array();
-			foreach($local as $pkg) {
-				$arr['local'] = array($pkg->getPackageHandle() => array('current' => $pkg->getPackageCurrentlyInstalledVersion(), 'available' => $pkg->getPackageVersion()));
-			}
-			foreach($remote as $pkg) {
-				$arr['remote'] = array($pkg->getPackageHandle() => array('current' => $pkg->getPackageCurrentlyInstalledVersion(), 'available' => $pkg->getPackageVersion()));
-			}
-			return $arr;
-		}
 		$handle = $_POST['handle'];
 		if(!$handle) {
 			$resp = ApiResponse::getInstance();
@@ -69,8 +87,12 @@ class ApiBasePackage extends ApiController {
 			$resp->send();
 		}
 		$pkg = self::validatePkg($handle);
+		if(in_array($pkg, Package::getRemotelyUpgradeablePackages())) {
+			$rpkg = MarketplaceRemoteItem::getByHandle($pkg->getPackageHandle());
+			
+		}
+		$pkg->upgradeCoreData();
 		$pkg->upgrade();
-
 	}
 
 	/**
@@ -99,8 +121,35 @@ class ApiBasePackage extends ApiController {
 		}
 	}
 	
-	private static function validatePkg($handle) {
+	public function install() {
+		$handle = $_POST['handle'];
+		if(!$handle) {
+			$resp = ApiResponse::getInstance();
+			$resp->setError(true);
+			$resp->setCode(400);
+			$resp->setMessage('ERROR_BAD_REQUEST');
+			$resp->send();
+		}
 		$pkg = Package::getByHandle($handle);
+		if(is_object($pkg)) {
+			$resp = ApiResponse::getInstance();
+			$resp->setError(true);
+			$resp->setCode(400);
+			$resp->setMessage('ERROR_ALREADY_INSTALLED');
+			$resp->send();
+		}
+		$pkg = self::validatePkg($handle, false);
+		$pkg->install();
+		$self = new self();
+		return $self->info($handle);
+	}
+	
+	private static function validatePkg($handle, $installed = true) {
+		if($installed) {
+			$pkg = Package::getByHandle($handle);
+		} else {
+			$pkg = Loader::package($handle);
+		}
 		if(is_object($pkg)) {
 			return $pkg;
 		}
